@@ -9,11 +9,9 @@ import {
   Filler,
 } from "chart.js";
 
-// Register necessary chart components
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Filler);
 
 export default function RatingChart({ ratings = [], currentRating }) {
-  // Ensure ratings is always a clean numeric array
   const safeRatings = Array.isArray(ratings)
     ? ratings.map((r) => Number(r)).filter((r) => !isNaN(r))
     : [];
@@ -44,6 +42,7 @@ export default function RatingChart({ ratings = [], currentRating }) {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -58,15 +57,26 @@ export default function RatingChart({ ratings = [], currentRating }) {
         suggestedMax: Math.max(...safeRatings) + 20,
       },
     },
-    maintainAspectRatio: false,
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div
+      className="relative flex flex-col items-center justify-center"
+      style={{ width: "800px", height: "400px", backgroundColor: "transparent" }}
+    >
       <Line data={data} options={options} />
-      {/* Centered rating text below the line */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-5xl font-bold text-purple-400 drop-shadow-lg">
-        {currentRating ?? "—"}
+      <div
+        className="absolute bottom-6 text-6xl drop-shadow-lg"
+        style={{
+          left: "50%",
+          transform: "translateX(-50%)",
+          color: "#a855f7",
+          fontFamily: "'Segoe UI', sans-serif",
+          fontWeight: "900",
+          letterSpacing: "1px",
+        }}
+      >
+        ᴜʟᴛɪᴍᴀᴛᴇ {currentRating ?? "—"}
       </div>
     </div>
   );
