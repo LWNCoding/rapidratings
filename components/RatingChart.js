@@ -62,7 +62,7 @@ export default function RatingChart({ ratings = [], currentRating }) {
   return (
     <div
       className="relative flex flex-col items-center justify-center"
-      style={{ width: "800px", height: "400px", backgroundColor: "transparent" }}
+      style={{ width: "900px", height: "400px", backgroundColor: "transparent" }}
     >
       <Line data={data} options={options} />
       <div
