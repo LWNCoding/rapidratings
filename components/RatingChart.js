@@ -12,13 +12,12 @@ import {
 // Register necessary chart components
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Filler);
 
-export default function RatingChart({ ratings }) {
-  // ✅ Guarantee ratings is always a clean numeric array
+export default function RatingChart({ ratings = [], currentRating }) {
+  // Ensure ratings is always a clean numeric array
   const safeRatings = Array.isArray(ratings)
     ? ratings.map((r) => Number(r)).filter((r) => !isNaN(r))
     : [];
 
-  // Show placeholder if there's no usable data yet
   if (safeRatings.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-gray-400 text-lg">
@@ -27,32 +26,28 @@ export default function RatingChart({ ratings }) {
     );
   }
 
-  // Prepare data for Chart.js
   const data = {
     labels: safeRatings.map((_, i) => `#${i + 1}`),
     datasets: [
       {
         label: "Rapid Rating",
         data: safeRatings,
-        borderColor: "#81b64c",
+        borderColor: "#a855f7", // purple line
         borderWidth: 3,
         fill: true,
-        backgroundColor: "rgba(129,182,76,0.15)",
+        backgroundColor: "rgba(168,85,247,0.15)", // soft purple glow
         pointRadius: 0,
-        tension: 0.3,
+        tension: 0.35,
       },
     ],
   };
 
-  // Chart display options
   const options = {
     responsive: true,
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: {
-          label: (context) => `Rating: ${context.parsed.y}`,
-        },
+        callbacks: { label: (context) => `Rating: ${context.parsed.y}` },
       },
     },
     scales: {
@@ -67,8 +62,12 @@ export default function RatingChart({ ratings }) {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="relative w-full h-full">
       <Line data={data} options={options} />
+      {/* Centered rating text below the line */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-5xl font-bold text-purple-400 drop-shadow-lg">
+        {currentRating ?? "—"}
+      </div>
     </div>
   );
 }
