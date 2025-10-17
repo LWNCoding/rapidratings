@@ -30,18 +30,16 @@ export default function RatingChart({ ratings = [], currentRating }) {
   const data = {
     labels: safeRatings.map((_, i) => `#${i + 1}`),
     datasets: [
-      // main purple line
       {
         label: "Rapid Rating",
         data: safeRatings,
-        borderColor: "#a855f7",
+        borderColor: "#a855f7", // purple line
         borderWidth: 3,
         fill: true,
-        backgroundColor: "rgba(168,85,247,0.12)",
+        backgroundColor: "rgba(168,85,247,0.12)", // soft purple glow
         pointRadius: 0,
         tension: 0.35,
       },
-      // highlight dot for current rating
       {
         label: "Current",
         data: safeRatings.map((r, i) => (i === lastIndex ? r : null)),
@@ -60,9 +58,22 @@ export default function RatingChart({ ratings = [], currentRating }) {
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: {
-          label: (context) =>
-            context.parsed.y ? `Rating: ${context.parsed.y}` : "",
+        enabled: false, // disable tooltips
+      },
+      annotation: {
+        annotations: {
+          ratingLabel: {
+            type: "label",
+            xValue: lastIndex,
+            yValue: lastValue,
+            backgroundColor: "transparent",
+            content: [`${lastValue}`],
+            color: "#a855f7",
+            font: {
+              size: 22,
+              weight: "bold",
+            },
+          },
         },
       },
     },
@@ -74,6 +85,7 @@ export default function RatingChart({ ratings = [], currentRating }) {
           color: "rgba(255,255,255,0.25)",
           font: { size: 14 },
           stepSize: 50,
+          callback: (value) => `${value}`, // prevents commas
         },
         grid: {
           color: "rgba(255,255,255,0.08)",
@@ -88,24 +100,10 @@ export default function RatingChart({ ratings = [], currentRating }) {
 
   return (
     <div
-      className="relative flex items-center justify-center"
+      className="relative"
       style={{ width: "900px", height: "400px", backgroundColor: "transparent" }}
     >
       <Line data={data} options={options} />
-      {/* rating label next to current point */}
-      <div
-        className="absolute text-4xl font-bold drop-shadow-lg"
-        style={{
-          color: "#a855f7",
-          fontFamily: "'Segoe UI', sans-serif",
-          transform: "translate(-50%, -50%)",
-          left: "75%", // roughly aligns near right side where latest point is
-          top: "40%",  // adjust vertical alignment
-          pointerEvents: "none",
-        }}
-      >
-        ᴜʟᴛɪᴍᴀᴛᴇ {lastValue ?? currentRating ?? "—"}
-      </div>
     </div>
   );
 }
